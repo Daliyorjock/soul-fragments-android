@@ -1,0 +1,27 @@
+{
+  "name": "心灵碎片",
+  "short_name": "心灵碎片",
+  "description": "发现你的认知特质，遇见懂你的人 - 人格测试社交 APP",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#e0e5ec",
+  "theme_color": "#6c5ce7",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["social", "lifestyle"],
+  "lang": "zh-CN",
+  "dir": "ltr"
+}
