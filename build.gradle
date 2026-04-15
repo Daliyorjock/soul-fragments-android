@@ -1,34 +1,20 @@
-plugins {
-    id 'com.android.application'
-}
-
-android {
-    namespace 'com.soulfragments.app'
-    compileSdk 34
-
-    defaultConfig {
-        applicationId "com.soulfragments.app"
-        minSdk 24
-        targetSdk 34
-        versionCode 1
-        versionName "1.0.0"
-    }
-
-    buildTypes {
-        debug {
-            debuggable true
-        }
-        release {
-            minifyEnabled false
-        }
-    }
-    
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-}
-
-dependencies {
-    // 只保留最基础的依赖
-}
+buildscript {  
+    repositories {  
+        google()  
+        mavenCentral()  
+    }  
+    dependencies {  
+        classpath 'com.android.tools.build:gradle:8.1.0'  
+    }  
+}  
+  
+allprojects {  
+    repositories {  
+        google()  
+        mavenCentral()  
+    }  
+}  
+  
+task clean(type: Delete) {  
+    delete rootProject.buildDir  
+}  
