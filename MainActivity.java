@@ -2,14 +2,13 @@ package com.soulfragments.app;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.webkit.WebView;
+import android.webkit.WebSettings;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -20,11 +19,9 @@ public class MainActivity extends Activity {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        // 最早能捕获的地方
-        log("=== 应用启动 (attachBaseContext) ===");
+        log("=== 应用启动 ===");
         log("设备：" + Build.BRAND + " " + Build.MODEL);
         log("系统：Android " + Build.VERSION.RELEASE);
-        log("SDK: " + Build.VERSION.SDK_INT);
     }
 
     @Override
@@ -36,48 +33,42 @@ public class MainActivity extends Activity {
             log("✓ super.onCreate 完成");
             
             appContext = getApplicationContext();
-            log("✓ 获取 ApplicationContext 成功");
+            log("✓ ApplicationContext 获取成功");
             
-            // 检查 WebView
-            log("检查 WebView...");
-            WebView webView = new WebView(appContext);
-            log("✓ WebView 创建成功");
-            webView.destroy();
-            
-            // 检查权限
-            int check = checkSelfPermission("android.permission.INTERNET");
-            log("网络权限：" + (check == 0 ? "已授予" : "未授予"));
-            
-            // 检查资源
-            try {
-                String[] assets = getAssets().list("www");
-                log("资源文件：" + (assets != null ? assets.length : 0) + " 个");
-                if (assets != null) {
-                    for (String a : assets) log("  - " + a);
-                }
-            } catch (Exception e) {
-                log("❌ 资源检查失败：" + e.getMessage());
-            }
-            
-            // 延迟加载页面
-            new Handler().postDelayed(() -> {
+            // 荣耀设备延迟初始化（关键！）
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 try {
-                    log("开始加载页面...");
-                    WebView wv = new WebView(appContext);
-                    wv.getSettings().setJavaScriptEnabled(true);
-                    wv.getSettings().setDomStorageEnabled(true);
-                    wv.getSettings().setAllowFileAccess(true);
-                    setContentView(wv);
-                    wv.loadUrl("file:///android_asset/www/index.html");
-                    log("✅ 加载完成");
+                    log("开始初始化 WebView...");
+                    
+                    WebView webView = new WebView(appContext);
+                    log("✓ WebView 创建成功");
+                    
+                    // 禁用硬件加速（荣耀设备关键！）
+                    webView.setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);
+                    log("✓ 软件渲染模式已启用");
+                    
+                    WebSettings settings = webView.getSettings();
+                    settings.setJavaScriptEnabled(true);
+                    settings.setDomStorageEnabled(true);
+                    settings.setAllowFileAccess(true);
+                    settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+                    log("✓ WebView 配置完成");
+                    
+                    setContentView(webView);
+                    log("✓ 页面已设置");
+                    
+                    webView.loadUrl("file:///android_asset/www/index.html");
+                    log("✓ 开始加载页面");
+                    
                 } catch (Exception e) {
-                    log("❌ 加载失败：" + e.getMessage());
+                    log("❌ WebView 初始化失败：" + e.getMessage());
                     showToast("错误：" + e.getMessage());
+                    finish();
                 }
-            }, 1000);
+            }, 2000); // 延迟 2 秒（荣耀设备需要更长延迟）
             
         } catch (Exception e) {
-            log("❌ onCreate 异常：" + e.getMessage());
+            log("❌ onCreate 失败：" + e.getMessage());
             showToast("启动失败：" + e.getMessage());
             finish();
         } catch (Error err) {
@@ -89,16 +80,24 @@ public class MainActivity extends Activity {
     
     private void log(String msg) {
         Log.d(TAG, msg);
-        // 也显示 Toast（前 3 条）
         if (msg.contains("✓") || msg.contains("❌") || msg.contains("===")) {
             showToast(msg);
         }
     }
     
     private void showToast(String msg) {
-        new Handler(Looper.getMainLooper()).post(() -> 
-            Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
-        );
+        new Handler(Looper.getMainLooper()).post(() -> {
+            try {
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Log.e(TAG, "Toast 失败：" + e.getMessage());
+            }
+        });
+    }
+    
+    @Override
+    public void onBackPressed() {
+        finish();
     }
     
     @Override
