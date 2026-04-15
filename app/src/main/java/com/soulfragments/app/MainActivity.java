@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         
         // 缓存设置
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        webSettings.setAppCacheEnabled(true);
+        //webSettings.setAppCacheEnabled(true);
         
         // 允许文件访问
         webSettings.setAllowFileAccess(true);
