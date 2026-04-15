@@ -1,40 +1,21 @@
-plugins {
-    id 'com.android.application'
-}
-
-android {
-    namespace 'com.test.blank'
-    compileSdk 34
-
-    defaultConfig {
-        applicationId "com.test.blank"
-        minSdk 24
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
-        
-        // 支持所有架构（包括折叠屏）
-        ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-        }
+// Top-level build file
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
     }
-
-    buildTypes {
-        debug {
-            debuggable true
-            jniDebuggable true
-        }
-        release {
-            minifyEnabled false
-        }
-    }
-    
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.0'
     }
 }
 
-dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
